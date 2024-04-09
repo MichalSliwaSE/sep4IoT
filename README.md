@@ -1,6 +1,6 @@
 # SEP4-IoT
 
-This repository is a part of a bigger Semester Project (SEP). It aims at connecting different tiers into a bigger and more complex project. The other two tiers are a Front-end (GUI) and a Back-end (server side). rephrase
+This repository is a part of a bigger Semester Project (SEP). It aims at connecting different tiers into a bigger and more complex project. The other two tiers are a Front-end and a Back-end.
 
 
 
