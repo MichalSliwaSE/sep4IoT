@@ -5,11 +5,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <util/delay.h>
+#include "includes.h"
 
 // Define parameters for the first configuration block
 #define WIFI_SSID_1 "Fibernet-IA02592142"
-#define WIFI_PASSWORD_1 ""
-#define SERVER_IP_1 ""
+#define WIFI_PASSWORD_1 "WBEUs2Z5"
+#define SERVER_IP_1 "192.168.1.85"
 #define SERVER_PORT_1 23
 
 // Define parameters for the second configuration block
@@ -29,9 +30,18 @@
 // #define USE_CONFIG_BLOCK_2
 //#define USE_CONFIG_BLOCK_3
 
-bool connection_controller_init(void) {
-  _delay_ms(3000);
+static char buffer[25];
+static server_callback application_callback_function;
+
+void connection_control_callback() {
+  application_callback_function(buffer);
+}
+
+
+bool connection_controller_init(server_callback callback) {
+  _delay_ms(1000);
   bool result = false;
+  application_callback_function = callback;
   wifi_init();
 
   #if defined(USE_CONFIG_BLOCK_1)
@@ -56,7 +66,7 @@ bool connection_controller_init(void) {
   if (connect_to_AP == WIFI_OK) {
     pc_comm_send_string_blocking("Connected to AP!\n");
     WIFI_ERROR_MESSAGE_t connect_to_server =
-        wifi_command_create_TCP_connection(server_ip, server_port, NULL, NULL);
+        wifi_command_create_TCP_connection(server_ip, server_port, connection_control_callback, buffer);
     if (connect_to_server == WIFI_OK) {
       pc_comm_send_string_blocking("Connected to server!\n");
       result = true;
