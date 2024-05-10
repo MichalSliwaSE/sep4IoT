@@ -4,6 +4,8 @@
 #define arrayLenght 15
 
 double temperatures[arrayLenght];
+uint8_t index;
+
 
 double generate_temperatures(){
     double temperature = (double)(rand() % 401) / 10.0;
@@ -31,18 +33,22 @@ void sortArray(){
     // printf("\n");
 }
 
-double water_temperature_get(){
-    uint8_t index = rand()%arrayLenght;
-    // printf("\n%0.1f\n", temperatures[index]);
-    return temperatures[index];
-}
-
 void water_temperature_init(){
     // printf("\nMock water templerature sensir initialized\n");
+    index = rand()%arrayLenght;
     for(uint8_t i = 0; i < arrayLenght; i++){
         temperatures[i] = generate_temperatures();
         // printf("%0.1f ", temperatures[i]);
     }
     // printf("\n");
     sortArray();
+}
+
+double water_temperature_get(){
+    if((int)rand()%2 == 0 && index < arrayLenght){
+        return temperatures[index+1];
+    }else{
+        return temperatures[index-1];
+    }
+    // printf("\n%0.1f\n", temperatures[index]);
 }
