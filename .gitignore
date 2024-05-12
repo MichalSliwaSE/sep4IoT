@@ -7,3 +7,5 @@
 #.vscode/ipch.pio/build/project.checksum
 .pio/build/ATmega2560/idedata.json
 .vscode/settings.json
+
+env.h
