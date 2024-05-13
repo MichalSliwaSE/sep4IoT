@@ -6,7 +6,7 @@
 #define arrayLenght 30
 
 int temperatures[arrayLenght];
-static uint8_t index = (int)arrayLenght/2;
+static int index = (int)arrayLenght/2;
 
 
 int* generate_temperatures(){
