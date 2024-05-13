@@ -1,0 +1,35 @@
+name: Manual PlatformIO CI Test Run
+
+on:
+  workflow_dispatch:  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache PlatformIO dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+            name: my-build-files  # Name for your artifact
+            path: .pio/build/target_run  # Path to the files relative to the runner
