@@ -22,11 +22,6 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: my-build-files  # Name for your artifact
-          path: .pio\build\target_run  # Path to the files relative to the runner
-
 
 
       # - name: Run wifiTest

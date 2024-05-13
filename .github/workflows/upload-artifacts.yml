@@ -1,10 +1,12 @@
-name: Manual PlatformIO CI Test Run
+name: Upload PlatformIO Build Artifacts
 
 on:
-  workflow_dispatch:  
+  push:
+    branches:
+      - main
 
 jobs:
-  build:
+  upload-artifacts:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,9 +29,8 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
-
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v2
         with:
-            name: my-build-files  # Name for your artifact
-            path: .pio/build/target_run  # Path to the files relative to the runner
+          name: my-build-files  # Name for your artifact
+          path: .pio/build/target_run  # Path to the files relative to the runner
