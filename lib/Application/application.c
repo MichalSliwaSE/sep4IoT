@@ -7,6 +7,7 @@
 #include "connection_controller.h"
 #include "json_controller.h"
 #include "water_ec.h"
+#include "ph_sensor.h"
 #include "water_temperature.h"
 #include <stdio.h>
 #include <util/delay.h>
@@ -25,6 +26,8 @@ void serverCallback(char *buffer)
 void application_init() {
     pc_comm_init(9600, NULL);
     water_ec_init();
+    ph_sensor_init();
+
     water_temperature_init();
     connection_controller_init(serverCallback);
 };
