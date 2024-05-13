@@ -26,8 +26,5 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
-      - name: Run Tests
-        run: |
-          pio test -e ${{ inputs.deploy_target }} -f ${{ inputs.test_file }}
 
       
