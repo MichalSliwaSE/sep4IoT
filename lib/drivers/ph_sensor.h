@@ -1,13 +1,9 @@
-#ifndef PH_SENSOR_H
-#define PH_SENSOR_H
-
+#pragma once
 #include <stdint.h>
 
-typedef struct {
-  float ph_value;  // Stores the mocked PH value
-} ph_sensor_t;
+/// @brief Mock - Initializes the pH sensor and any necessary peripherals.
+void ph_sensor_init(void);
 
-// Function prototypes for the mock PH sensor class
-float ph_sensor_read(ph_sensor_t* sensor);
-
-#endif /* PH_SENSOR_H */
+/// @brief Mock - Simulates measuring the pH level of the water.
+/// @return The simulated pH level measured.
+uint16_t ph_sensor_measure(void);
