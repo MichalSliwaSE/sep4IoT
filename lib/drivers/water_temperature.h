@@ -8,4 +8,4 @@
 
 void water_temperature_init();
 
-double water_temperature_get();
+int water_temperature_get();

@@ -3,25 +3,25 @@
 #include <stdlib.h>
 #include "includes.h"
 
-#define arrayLenght 40
+#define arrayLenght 30
 
-double temperatures[arrayLenght];
+int temperatures[arrayLenght];
 static uint8_t index = (int)arrayLenght/2;
 
 
-double* generate_temperatures(){
-    double number = 9.5;
+int* generate_temperatures(){
+    int number = 1;
     for(uint8_t i = 0; i < arrayLenght; i++){
-        temperatures[i] = number+0.5;
-        number+= 0.5;
+        temperatures[i] = number;
+        number++;
         // printf("%0.1f ", temperatures[i]);
     }
     return temperatures;
 }
 
 int compare(const void *a, const void *b) {
-    double *ptr_a = (double *)a;
-    double *ptr_b = (double *)b;
+    int *ptr_a = (int *)a;
+    int *ptr_b = (int *)b;
 
     return (*ptr_a - *ptr_b);
 }
@@ -30,7 +30,7 @@ void sortArray(){
     size_t arr_size = sizeof(temperatures) / sizeof(temperatures[0]);
 
     // Sort the array using qsort
-    qsort(temperatures, arr_size, sizeof(double), compare);
+    qsort(temperatures, arr_size, sizeof(int), compare);
 
     // Print the sorted array
     // printf("\nSorted array: ");
@@ -47,7 +47,7 @@ void water_temperature_init(){
     sortArray();
 }
 
-double water_temperature_get(){
+int water_temperature_get(){
     if((int)rand()%2 == 0 && index < arrayLenght){
         index++;
     }else{
