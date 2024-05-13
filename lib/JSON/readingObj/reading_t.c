@@ -3,15 +3,9 @@
 #include <string.h>
 #include "reading_t.h"
 
-// typedef struct
-// {
-//   char* name;
-//   int reading;
-// } Reading_t;
-
 typedef struct Reading_t *reading;
 
-reading *create_instances_in_json(char *name, int result)
+reading *create_instances_in_json(char *name, double result)
 {
   // Allocate memory for the object
   Reading_t *obj = malloc(sizeof(Reading_t));
