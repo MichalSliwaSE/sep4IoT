@@ -1,4 +1,3 @@
-#include "../fff.h"
 #include "unity.h"
 #include <util/delay.h>
 #include <avr/io.h>
@@ -33,7 +32,7 @@ void test_water_temperature_change(){
     double temperature1 = water_temperature_get();
     double temperature2 = water_temperature_get();
 
-    TEST_ASSERT_TRUE(temperature1 != temperature2);
+    TEST_ASSERT_TRUE(temperature1 < temperature2 || temperature1 > temperature2);
 }
 
 int main(void){

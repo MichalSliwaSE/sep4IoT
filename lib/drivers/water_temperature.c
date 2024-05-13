@@ -1,15 +1,22 @@
 #include "water_temperature.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include "includes.h"
 
-#define arrayLenght 15
+#define arrayLenght 40
 
 double temperatures[arrayLenght];
-uint8_t index;
+static uint8_t index = (int)arrayLenght/2;
 
 
-double generate_temperatures(){
-    double temperature = (double)(rand() % 401) / 10.0;
-    return temperature;
+double* generate_temperatures(){
+    double number = 9.5;
+    for(uint8_t i = 0; i < arrayLenght; i++){
+        temperatures[i] = number+0.5;
+        number+= 0.5;
+        // printf("%0.1f ", temperatures[i]);
+    }
+    return temperatures;
 }
 
 int compare(const void *a, const void *b) {
@@ -35,20 +42,17 @@ void sortArray(){
 
 void water_temperature_init(){
     // printf("\nMock water templerature sensir initialized\n");
-    index = rand()%arrayLenght;
-    for(uint8_t i = 0; i < arrayLenght; i++){
-        temperatures[i] = generate_temperatures();
-        // printf("%0.1f ", temperatures[i]);
-    }
+    generate_temperatures();
     // printf("\n");
     sortArray();
 }
 
 double water_temperature_get(){
     if((int)rand()%2 == 0 && index < arrayLenght){
-        return temperatures[index+1];
+        index++;
     }else{
-        return temperatures[index-1];
+        index--;
     }
+    return temperatures[index];
     // printf("\n%0.1f\n", temperatures[index]);
 }
