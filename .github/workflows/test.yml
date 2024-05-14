@@ -1,0 +1,38 @@
+name: PlatformIO CI Automated Testrun
+
+run-name: Tests to ${{ inputs.deploy_target }} by @${{ github.actor }}
+
+on:
+  push:  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+      
+      - name: run water electric conductivity test
+        run: pio test -e native_test -f "test_water_ec"  
+        
+      - name: run water temperature test
+        run: pio test -e native_test -f "test_water_temperature"
+
+      - name: run water ph test
+        run: pio test -e native_test -f "test_water_ph"
+
+      
