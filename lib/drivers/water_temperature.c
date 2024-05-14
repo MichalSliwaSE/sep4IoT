@@ -6,7 +6,7 @@
 #define arrayLenght 30
 
 int temperatures[arrayLenght];
-static int index = (int)arrayLenght/2;
+static int start_index = (int)arrayLenght/2;
 
 
 int* generate_temperatures(){
@@ -48,11 +48,11 @@ void water_temperature_init(){
 }
 
 int water_temperature_get(){
-    if((int)rand()%2 == 0 && index < arrayLenght){
-        index++;
+    if((int)rand()%2 == 0 && start_index < arrayLenght){
+        start_index++;
     }else{
-        index--;
+        start_index--;
     }
-    return temperatures[index];
+    return temperatures[start_index];
     // printf("\n%0.1f\n", temperatures[index]);
 }
