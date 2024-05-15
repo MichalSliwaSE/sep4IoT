@@ -6,6 +6,7 @@
 #include "ph_sensor.h"
 #include "water_temperature.h"
 #include "connection_controller.h"
+#include "water_flow_controller.h"
 #include <string.h>
 #include <stdlib.h>
 #include "pc_comm.h"
@@ -31,13 +32,14 @@ void json_controller_parse(char* pkg)
 };
 
 void json_controller_pkg() {
-    int arraySize = 3;
+    int arraySize = 4;
     reading information[arraySize];
 
     // define each sensor, sadly manually :')
     information[0] = (reading *)create_instances_in_json("water_conductivity", water_ec_measure());
     information[1] = (reading *)create_instances_in_json("water_ph", ph_sensor_measure());
     information[2] = (reading *)create_instances_in_json("water_temperature", water_temperature_get());
+    information[3] = (reading *)create_instances_in_json("water_flow_rate", water_flow_controller_get_flow());
 
     // this creates the json
     char *temp = create_json(information, arraySize);
