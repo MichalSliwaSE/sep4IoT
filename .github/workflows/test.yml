@@ -27,13 +27,13 @@ jobs:
         run: pip install --upgrade platformio
       
       - name: run water electric conductivity test
-        run: pio test --coverage -e native_test -f "test_water_ec"  
+        run: pio test -e native_test -f "test_water_ec"  
         
       - name: run water temperature test
-        run: pio test --coverage -e native_test -f "test_water_temperature"
+        run: pio test -e native_test -f "test_water_temperature"
 
       - name: run water ph test
-        run: pio test --coverage -e native_test -f "test_water_ph"
+        run: pio test -e native_test -f "test_water_ph"
 
       - name: Upload gcov artifacts
         uses: actions/upload-artifact@v2
