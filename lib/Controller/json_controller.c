@@ -54,7 +54,7 @@ void json_controller_parse(char* pkg)
 };
 
 void json_controller_pkg() {
-    int arraySize = 6;
+    int arraySize = 7;
     reading information[arraySize];
 
     uint8_t celc, hum_int;
