@@ -35,10 +35,13 @@ jobs:
       - name: run water ph test
         run: pio test -e native_test -f "test_water_ph"
 
-      - name: Upload gcov artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: gcov-reports
-          path: .pio\build\native_test\test
+      - name: List files in project directory
+        run: ls -la
+
+      #- name: Upload gcov artifacts
+       # uses: actions/upload-artifact@v2
+        #with:
+         # name: gcov-reports
+          #path: .pio\build\native_test\test
 
       
