@@ -1,4 +1,4 @@
-name: PlatformIO CI Artifact Upload (Main Branch)
+name: PlatformIO CI Build Artifact Upload (Main Branch)
 
 on:
   push:
