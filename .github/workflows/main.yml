@@ -11,8 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/upload-artifact@v4  # Upload artifacts for download in main.yml
+      - uses: actions/upload-artifact@v4
         with:
-          name: my-build-files  # Name for the uploaded artifact
-          path: .pio\build\target_run  # Path to the files relative to the runner
+          name: build-files  
+          path: .\.pio\build\target_run
 
