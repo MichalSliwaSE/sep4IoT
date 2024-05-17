@@ -11,7 +11,12 @@ void water_flow_controller_init()
 
 void water_flow_controller_set_flow(uint8_t percentage)
 {
-    water_flow_pct = percentage;
+    if (percentage > 100) water_flow_pct = 100;
+
+    else if (percentage < 0) water_flow_pct = 0;
+
+    else water_flow_pct = percentage;
+    
     uint8_t angle = floor(180 * (percentage / 100));
     servo(angle);
 };
