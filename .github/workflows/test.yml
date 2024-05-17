@@ -35,6 +35,9 @@ jobs:
       - name: run water ph test
         run: pio test -e native_test -f "test_water_ph"
 
+      - name: run controller tests
+        run: pio test -e native_test -f "test_controller"
+
       - name: Upload gcov artifacts
         uses: actions/upload-artifact@v2
         with:
