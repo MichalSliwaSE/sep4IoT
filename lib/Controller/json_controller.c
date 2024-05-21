@@ -6,6 +6,7 @@
 #include "ph_sensor.h"
 #include "water_temperature.h"
 #include "connection_controller.h"
+#include "water_flow_controller.h"
 #include <string.h>
 #include <stdlib.h>
 #include "pc_comm.h"
@@ -25,19 +26,40 @@ void json_controller_parse(char* pkg)
         {
             json_controller_pkg();
         }
+
+        else if (strcmp(cJSON_GetStringValue(requestType), "waterFlowCorrection") == 0)
+        {
+            cJSON *outputValue;
+            outputValue = cJSON_GetObjectItemCaseSensitive(json, "value");
+
+            double dValue;
+            dValue = cJSON_GetNumberValue(outputValue);
+
+            uint8_t value;
+
+            if (dValue < 0)
+            value = 0;
+            else if (dValue > 255)
+            value = 255;
+            else
+            value = (uint8_t)dValue;
+
+            json_controller_edit_output(value);
+        }
     }
 
     cJSON_Delete(json); //frees memory
 };
 
 void json_controller_pkg() {
-    int arraySize = 3;
+    int arraySize = 4;
     reading information[arraySize];
 
     // define each sensor, sadly manually :')
     information[0] = (reading *)create_instances_in_json("water_conductivity", water_ec_measure());
     information[1] = (reading *)create_instances_in_json("water_ph", ph_sensor_measure());
     information[2] = (reading *)create_instances_in_json("water_temperature", water_temperature_get());
+    information[3] = (reading *)create_instances_in_json("water_flow_rate", water_flow_controller_get_flow());
 
     // this creates the json
     char *temp = create_json(information, arraySize);
@@ -47,3 +69,18 @@ void json_controller_pkg() {
 
     free(temp);
 };
+
+void json_controller_edit_output(uint8_t percentage) {
+    water_flow_controller_set_flow(percentage);
+
+    int arraySize = 1;
+    reading information[arraySize];
+    information[0] = (reading *)create_instances_in_json("status", 1);
+
+    char *temp = create_json(information, arraySize);
+    int length = strlen(temp);
+
+    connection_controller_transmit(temp, length);
+
+    free(temp);
+}
