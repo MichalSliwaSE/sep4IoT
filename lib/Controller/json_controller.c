@@ -54,7 +54,6 @@ void json_controller_parse(char* pkg)
 
 void json_controller_pkg() {
     int arraySize = 4;
-    int arraySize = 4;
     reading information[arraySize];
 
     // define each sensor, sadly manually :')
