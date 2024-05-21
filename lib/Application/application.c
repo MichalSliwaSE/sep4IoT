@@ -9,6 +9,7 @@
 #include "water_ec.h"
 #include "ph_sensor.h"
 #include "water_temperature.h"
+#include "water_level.h"
 #include <stdio.h>
 #include <util/delay.h>
 #include <stdlib.h>
@@ -29,7 +30,9 @@ void application_init() {
     ph_sensor_init();
 
     water_temperature_init();
+    water_level_init();
     connection_controller_init(serverCallback);
+    
 };
 
 void application_run() {
