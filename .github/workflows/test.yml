@@ -1,4 +1,4 @@
-name: PlatformIO CI Automated Testrun
+name: PlatformIO CI Automated Testrun + Code Coverage Report Upload
 
 run-name: Tests to ${{ inputs.deploy_target }} by @${{ github.actor }}
 
@@ -34,5 +34,11 @@ jobs:
 
       - name: run water ph test
         run: pio test -e native_test -f "test_water_ph"
+
+      - name: Upload gcov artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: gcov-reports
+          path: ./.pio/build/native_test/test
 
       
