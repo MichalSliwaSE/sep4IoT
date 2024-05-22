@@ -2,12 +2,14 @@
 #include "uECC.h"
 #include <stdio.h>
 #include <string.h>
+#include "AESHandler.h"
+
+#define IV_SIZE 16
 
 static uint8_t private_key[32 + 1];
 static uint8_t public_key[64 + 1];
 static uECC_Curve curve;
 
-static void simple_hash(uint8_t *output, const uint8_t *input);
 static int custom_rng(uint8_t *dest, unsigned size);
 
 void key_exchange_init() {
@@ -27,14 +29,10 @@ void key_exchange_get_public_key(uint8_t *copy_public_key) {
 void key_exchange_generate_shared_secret(uint8_t *received_public_key, uint8_t *shared_secret) {
     uint8_t temp_secret[32];
     uECC_shared_secret(received_public_key, private_key, temp_secret, curve);
-    simple_hash(shared_secret, temp_secret);
-}
 
-static void simple_hash(uint8_t *output, const uint8_t *input) {
-    for (int i = 0; i < 16; i++) {
-        output[i] = input[i];
-    }
-    output[16] = '\0';
+    uint8_t iv[IV_SIZE];
+    generate_iv(iv);
+    AESHandler_encrypt(temp_secret, shared_secret, iv);
 }
 
 static int custom_rng(uint8_t *dest, unsigned size) {

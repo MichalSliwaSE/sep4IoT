@@ -13,11 +13,15 @@
 #include "aes.h"
 #include "crypto_setup.h"
 #include "key_exchange.h"
+#include "AESHandler.h"
 
+
+
+#define IV_SIZE 16
 // AES context
 struct AES_ctx ctx;
 
-static char buffer[100];
+static char buffer[255];
 static server_callback application_callback_function;
 
 void connection_controller_callback() {
@@ -75,20 +79,24 @@ bool connection_controller_transmit(char *package, int length) {
     memset(encrypted_package, 0, padded_length);
     memcpy(encrypted_package, package, length);
 
-    // Encrypt the package
-    AES_ECB_encrypt(&ctx, encrypted_package);
+    uint8_t iv[IV_SIZE];
+    generate_iv(iv); // Generate Initialization Vector (IV)
+
+    // Encrypt the package using AESHandler
+    AESHandler_encrypt(encrypted_package, encrypted_package, iv);
 
     // Transmit the encrypted data
     wifi_command_TCP_transmit((char *)encrypted_package, padded_length);
 
     return true;
 }
+
 void on_receive_server_public_key(uint8_t *server_public_key) {
-    uint8_t shared_secret[17]; // 16 bytes for AES key + 1 for null terminator
+    uint8_t shared_secret[16]; // 16 bytes for AES key
     key_exchange_generate_shared_secret(server_public_key, shared_secret);
 
-    // Now, the shared_secret is your AES key
-    AES_init_ctx(&ctx, shared_secret); // Initialize AES context with the shared secret
+    // Initialize AES context with the shared secret key
+    AESHandler_init(shared_secret);
 }
 void on_receive_data(uint8_t *encrypted_data, int length) {
     // Ensure the length is a multiple of 16 for AES decryption
@@ -100,8 +108,8 @@ void on_receive_data(uint8_t *encrypted_data, int length) {
     uint8_t decrypted_data[length];
     memcpy(decrypted_data, encrypted_data, length);
 
-    // Decrypt the data
-    AES_ECB_decrypt(&ctx, decrypted_data);
+    // Decrypt the data using AESHandler
+    AESHandler_decrypt(decrypted_data, decrypted_data, NULL);
 
     // Process the decrypted data
     json_controller_parse((char*)decrypted_data);
