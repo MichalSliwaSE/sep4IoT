@@ -13,8 +13,24 @@
 #include <stdlib.h>
 #include "pc_comm.h"
 #include "light.h"
+#include "co2.h"
 
 char *create_json(reading *jsonInformation, int arraySize);
+
+void json_controller_edit_output(uint8_t percentage) {
+    water_flow_controller_set_flow(percentage);
+
+    int arraySize = 1;
+    reading information[arraySize];
+    information[0] = (reading *)create_instances_in_json("status", 1);
+
+    char *temp = create_json(information, arraySize);
+    int length = strlen(temp);
+
+    connection_controller_transmit(temp, length);
+
+    free(temp);
+}
 
 void json_controller_parse(char* pkg)
 {
@@ -55,7 +71,7 @@ void json_controller_parse(char* pkg)
 };
 
 void json_controller_pkg() {
-    int arraySize = 8;
+    int arraySize = 9;
     reading information[arraySize];
 
     uint8_t celc, hum_int;
@@ -70,6 +86,7 @@ void json_controller_pkg() {
     information[5] = (reading *)create_instances_in_json("temperature", celc);
     information[6] = (reading *)create_instances_in_json("humidity", hum_int);
     information[7] = (reading *)create_instances_in_json("light", light_read());
+    information[8] = (reading *)create_instances_in_json("co2", co2_measure());
 
     // this creates the json
     char *temp = create_json(information, arraySize);
@@ -79,18 +96,3 @@ void json_controller_pkg() {
 
     free(temp);
 };
-
-void json_controller_edit_output(uint8_t percentage) {
-    water_flow_controller_set_flow(percentage);
-
-    int arraySize = 1;
-    reading information[arraySize];
-    information[0] = (reading *)create_instances_in_json("status", 1);
-
-    char *temp = create_json(information, arraySize);
-    int length = strlen(temp);
-
-    connection_controller_transmit(temp, length);
-
-    free(temp);
-}

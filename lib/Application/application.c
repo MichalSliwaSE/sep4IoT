@@ -11,6 +11,7 @@
 #include "water_temperature.h"
 #include "water_level.h"
 #include "light.h"
+#include "co2.h"
 #include <stdio.h>
 #include <util/delay.h>
 #include <stdlib.h>
@@ -31,6 +32,7 @@ void application_init() {
     ph_sensor_init();
     dht11_init();
     light_init();
+    co2_init();
 
     water_temperature_init();
     water_level_init();
