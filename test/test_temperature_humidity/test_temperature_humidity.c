@@ -9,16 +9,19 @@
 
 DEFINE_FFF_GLOBALS
 
+FAKE_VOID_FUNC(dht11_init);
+FAKE_VALUE_FUNC(DHT11_ERROR_MESSAGE_t, dht11_get, uint8_t *, uint8_t *, uint8_t *, uint8_t *);
+
 void setUp(void)
 {
+    RESET_FAKE(dht11_get);
+    RESET_FAKE(dht11_init);
+    FFF_RESET_HISTORY();
 }
 
 void tearDown(void)
 {
 }
-
-FAKE_VOID_FUNC(dht11_init);
-FAKE_VALUE_FUNC(DHT11_ERROR_MESSAGE_t, dht11_get, uint8_t *, uint8_t *, uint8_t *, uint8_t *);
 
 void test_dht11_status(void)
 {
@@ -48,7 +51,7 @@ DHT11_ERROR_MESSAGE_t dht11_get_custom_fake(uint8_t *hum, uint8_t *arg2, uint8_t
 void test_temperature_is_22celc(void)
 {
     dht11_init();
-    TEST_ASSERT_EQUAL(2, dht11_init_fake.call_count);
+    TEST_ASSERT_EQUAL(1, dht11_init_fake.call_count);
 
     uint8_t expected_temp = 22;
 
@@ -59,17 +62,17 @@ void test_temperature_is_22celc(void)
 
     TEST_ASSERT_EQUAL(DHT11_OK, result);
     TEST_ASSERT_EQUAL(expected_temp, celc);
-    TEST_ASSERT_EQUAL(2, dht11_get_fake.call_count);
+    TEST_ASSERT_EQUAL(1, dht11_get_fake.call_count);
 
     char message[1024];
     sprintf(message, "INFO! dht11 measurement! Temperature %d C!       :1:_:PASS\n", celc);
     TEST_MESSAGE(message); // TEST_MESSAGE("m e s s a g e :1:_:PASS\n"); // no : in the message
 }
 
-void test_humidity_is_80celc(void)
+void test_humidity_is_80proc(void)
 {
     dht11_init();
-    TEST_ASSERT_EQUAL(3, dht11_init_fake.call_count);
+    TEST_ASSERT_EQUAL(1, dht11_init_fake.call_count);
 
     uint8_t expected_hum = 80;
 
@@ -80,7 +83,7 @@ void test_humidity_is_80celc(void)
 
     TEST_ASSERT_EQUAL(DHT11_OK, result);
     TEST_ASSERT_EQUAL(expected_hum, humidity);
-    TEST_ASSERT_EQUAL(3, dht11_get_fake.call_count);
+    TEST_ASSERT_EQUAL(1, dht11_get_fake.call_count);
 
     char message[1024];
     sprintf(message, "INFO! dht11 measurement! Humidity %d%%!       :1:_:PASS\n", humidity);
@@ -93,7 +96,7 @@ int main(void)
 
     RUN_TEST(test_dht11_status);
     RUN_TEST(test_temperature_is_22celc);
-    RUN_TEST(test_humidity_is_80celc);
+    RUN_TEST(test_humidity_is_80proc);
 
     return UNITY_END();
 }
