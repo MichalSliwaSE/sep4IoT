@@ -2,18 +2,12 @@
 #include "../JSON/createJson/createJson.h"
 #include "../JSON/cJSON.h"
 #include "json_controller.h"
-#include "water_ec.h"
-#include "ph_sensor.h"
-#include "water_temperature.h"
-#include "dht11.h"
 #include "connection_controller.h"
 #include "water_flow_controller.h"
-#include "water_level.h"
+#include "sensor_controller.h"
+
 #include <string.h>
 #include <stdlib.h>
-#include "pc_comm.h"
-#include "light.h"
-#include "co2.h"
 
 char *create_json(reading *jsonInformation, int arraySize);
 
@@ -74,19 +68,19 @@ void json_controller_pkg() {
     int arraySize = 9;
     reading information[arraySize];
 
-    uint8_t celc, hum_int;
-    dht11_get(&hum_int, NULL, &celc, NULL);
+    uint8_t celc, hum;
+    sensor_controller_dht11(&celc, &hum);
 
     // define each sensor, sadly manually :')
-    information[0] = (reading *)create_instances_in_json("water_conductivity", water_ec_measure());
-    information[1] = (reading *)create_instances_in_json("water_ph", ph_sensor_measure());
-    information[2] = (reading *)create_instances_in_json("water_temperature", water_temperature_get());
+    information[0] = (reading *)create_instances_in_json("water_conductivity", sensor_controller_water_ec());
+    information[1] = (reading *)create_instances_in_json("water_ph", sensor_controller_ph());
+    information[2] = (reading *)create_instances_in_json("water_temperature", sensor_controller_water_temp());
     information[3] = (reading *)create_instances_in_json("water_flow_rate", water_flow_controller_get_flow());
-    information[4] = (reading *)create_instances_in_json("water_level", water_level_measure());
+    information[4] = (reading *)create_instances_in_json("water_level", sensor_controller_water_temp());
     information[5] = (reading *)create_instances_in_json("temperature", celc);
-    information[6] = (reading *)create_instances_in_json("humidity", hum_int);
-    information[7] = (reading *)create_instances_in_json("light", light_read());
-    information[8] = (reading *)create_instances_in_json("co2", co2_measure());
+    information[6] = (reading *)create_instances_in_json("humidity", hum);
+    information[7] = (reading *)create_instances_in_json("light", sensor_controller_light());
+    information[8] = (reading *)create_instances_in_json("co2", sensor_controller_co2());
 
     // this creates the json
     char *temp = create_json(information, arraySize);
