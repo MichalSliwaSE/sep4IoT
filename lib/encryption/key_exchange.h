@@ -5,7 +5,8 @@
 #define KEY_EXCHANGE_H
 
 #include <stdbool.h>
-extern bool key_exchange_completed;
+extern bool key_exchange_completed; //flag for tracking key exchange status
+
 /*
  * @brief Initializes the key exchange module
  */

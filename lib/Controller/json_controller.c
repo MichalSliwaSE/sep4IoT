@@ -39,7 +39,10 @@ void json_controller_parse(char* pkg)
                 pc_comm_send_string_blocking(cJSON_GetStringValue(key));
                 pc_comm_send_string_blocking("\n");
 
-                handle_received_public_key(cJSON_GetStringValue(key));
+                 //check if key exchange is completed
+                if (!key_exchange_completed) {
+                    handle_received_public_key(cJSON_GetStringValue(key));
+                }
             }
         }
     }

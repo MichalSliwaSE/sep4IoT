@@ -68,11 +68,13 @@ bool connection_controller_transmit(char *package, int length) {
 static void handle_key_exchange()
 {
     uint8_t public_key[33];
+    
     key_exchange_init();
     key_exchange_generate_keys();
     key_exchange_get_public_key(public_key);
 
     pc_comm_send_string_blocking("Sending public key to server:\n");
     pc_comm_send_string_blocking((char *)public_key); 
+
     connection_controller_transmit(public_key, sizeof(public_key));
 }
