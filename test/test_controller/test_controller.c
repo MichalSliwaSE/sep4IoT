@@ -6,8 +6,7 @@
 #include "../lib/mocks/mock_avr_io.h"
 
 #include "water_flow_controller.h"
-// #include "json_controller.h"
-// #include "connection_controller.h"
+#include "sensor_controller.h"
 
 DEFINE_FFF_GLOBALS
 
@@ -18,9 +17,11 @@ FAKE_VALUE_FUNC(uint8_t, water_flow_controller_get_flow);
 
 void setUp(void)
 {
+    // WATER FLOW CONTROLLER
     RESET_FAKE(water_flow_controller_init);
     RESET_FAKE(water_flow_controller_set_flow);
     RESET_FAKE(water_flow_controller_get_flow);
+
     FFF_RESET_HISTORY();
 }
 
@@ -73,12 +74,6 @@ void test_water_flow_set_opening_more_then_100(void){
     TEST_ASSERT_EQUAL(100, result);
 }
 
-// JSON CONTROLLER
-
-// CONNECTION CONTROLLER
-
-
-
 int main(void)
 {
     UNITY_BEGIN();
@@ -87,6 +82,8 @@ int main(void)
     RUN_TEST(test_water_flow_status);
     RUN_TEST(test_water_flow_set_closing_less_then_0);
     RUN_TEST(test_water_flow_set_opening_more_then_100);
+
+    // SENSOR_CONTROLLER
 
     return UNITY_END();
 }
