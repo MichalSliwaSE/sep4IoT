@@ -78,11 +78,11 @@ static void copy_key(char *buffer)
 }
 
 void handle_received_public_key(const char *received_key) {
-    // Assuming key has a fixed length of 64 characters
-    char key[65]; // Make space for null terminator
+    
+    char key[65]; //make space for null terminator
     copy_key(key);
-    // Generate shared secret using the received public key
-    uint8_t shared_secret[17]; // Assuming shared secret is 16 bytes (128 bits) long
+    //generate shared secret using the received public key
+    uint8_t shared_secret[17];
     key_exchange_generate_shared_secret((uint8_t *)key, shared_secret);
     
     AESHandler_init(shared_secret);
