@@ -13,12 +13,19 @@
 #include <util/delay.h>
 #include <stdlib.h>
 #include <string.h>
+#include "key_exchange.h"
+#include "AESHandler.h"
+
 
 void serverCallback(char *buffer)
 {
     pc_comm_send_string_blocking("Server >> ");
     pc_comm_send_string_blocking(buffer);
     pc_comm_send_string_blocking("\n");
+
+     if (key_exchange_completed) {
+        AESHandler_decrypt(buffer);
+    }
 
     json_controller_parse(buffer);
 }

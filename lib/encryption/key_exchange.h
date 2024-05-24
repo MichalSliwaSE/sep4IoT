@@ -1,6 +1,11 @@
 #pragma once
 #include <stdint.h>
 
+#ifndef KEY_EXCHANGE_H
+#define KEY_EXCHANGE_H
+
+#include <stdbool.h>
+extern bool key_exchange_completed;
 /*
  * @brief Initializes the key exchange module
  */
@@ -23,3 +28,5 @@ void key_exchange_get_public_key(uint8_t *public_key);
  * @param secret Buffer to store the generated shared secret
  */
 void key_exchange_generate_shared_secret(uint8_t *public_key, uint8_t *secret);
+
+#endif 

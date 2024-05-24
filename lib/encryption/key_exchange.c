@@ -4,11 +4,14 @@
 #include <string.h>
 #include "AESHandler.h"
 
-#define IV_SIZE 16
+bool key_exchange_completed = false;
 
 static uint8_t private_key[32 + 1];
 static uint8_t public_key[64 + 1];
 static uECC_Curve curve;
+
+#define TRUNCATED_HASH_SIZE 16
+#define IV_SIZE 16
 
 static int custom_rng(uint8_t *dest, unsigned size);
 
@@ -22,17 +25,25 @@ void key_exchange_generate_keys() {
 }
 
 void key_exchange_get_public_key(uint8_t *copy_public_key) {
-    memcpy(copy_public_key, public_key, 64);
+     for (int i = 0; i < 64; i++)
+    {
+        copy_public_key[i] = public_key[i];
+    }
     copy_public_key[64] = '\0';
 }
 
 void key_exchange_generate_shared_secret(uint8_t *received_public_key, uint8_t *shared_secret) {
     uint8_t temp_secret[32];
     uECC_shared_secret(received_public_key, private_key, temp_secret, curve);
+    // Hash the generated secret and truncate it
+    uint8_t truncated_hash[TRUNCATED_HASH_SIZE];
+    hash_computeSHA1(truncated_hash, TRUNCATED_HASH_SIZE, temp_secret);
 
-    uint8_t iv[IV_SIZE];
-    generate_iv(iv);
-    AESHandler_encrypt(temp_secret, shared_secret, iv);
+    // Copy the truncated hash to the secret
+    for (int i = 0; i < TRUNCATED_HASH_SIZE; i++)
+    {
+        shared_secret[i] = truncated_hash[i];
+    }
 }
 
 static int custom_rng(uint8_t *dest, unsigned size) {
