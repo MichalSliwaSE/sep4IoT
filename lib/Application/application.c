@@ -19,9 +19,11 @@ void serverCallback(char *buffer)
     sensor_controller_send(buffer);
     sensor_controller_send("\n");
 
-    if (key_exchange_completed) {
-        AESHandler_decrypt(buffer);
-    }
+
+    // ENCRYPTION
+    // if (key_exchange_completed) {
+    //     AESHandler_decrypt(buffer);
+    // }
 
     json_controller_parse(buffer);
 }

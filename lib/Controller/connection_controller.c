@@ -11,6 +11,7 @@
 #include "../../env.h"
 #include "key_exchange.h"
 #include "AESHandler.h"
+#include "pc_comm.h"
 
 
 static void handle_key_exchange();
@@ -40,7 +41,8 @@ bool connection_controller_init(server_callback callback) {
     WIFI_ERROR_MESSAGE_t connect_to_server =
         wifi_command_create_TCP_connection(server_ip, server_port, connection_controller_callback, buffer);
 
-        handle_key_exchange();
+        // ENCRYPTION
+        // handle_key_exchange();
 
 
     if (connect_to_server == WIFI_OK) {
@@ -59,7 +61,19 @@ bool connection_controller_init(server_callback callback) {
 }
 
 bool connection_controller_transmit(char *package, int length) {
-  wifi_command_TCP_transmit(package, length);
+
+    // Print the JSON package before sending
+    pc_comm_send_string_blocking("Sending JSON package:\n");
+    pc_comm_send_string_blocking(package);
+    pc_comm_send_string_blocking("\n");
+
+    // Print the length of the package
+    char length_str[32];
+    snprintf(length_str, sizeof(length_str), "Length: %d\n", length);
+    pc_comm_send_string_blocking(length_str);
+
+
+    wifi_command_TCP_transmit(package, length);
 
   return true;
 }

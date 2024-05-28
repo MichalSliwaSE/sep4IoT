@@ -80,22 +80,24 @@ void json_controller_parse(char* pkg)
 
             json_controller_edit_output(value);
         }
-         else if (strcmp(cJSON_GetStringValue(requestType), "PublicKey") == 0)
-        {
-            cJSON *key = cJSON_GetObjectItemCaseSensitive(json, "key");
-            if (key != NULL && cJSON_IsString(key))
-            {
-                
-                pc_comm_send_string_blocking("Received public key from server: ");
-                pc_comm_send_string_blocking(cJSON_GetStringValue(key));
-                pc_comm_send_string_blocking("\n");
 
-                 //check if key exchange is completed
-                if (!key_exchange_completed) {
-                    handle_received_public_key(cJSON_GetStringValue(key));
-                }
-            }
-        }
+        // ENCRYPTION
+        //  else if (strcmp(cJSON_GetStringValue(requestType), "PublicKey") == 0)
+        // {
+        //     cJSON *key = cJSON_GetObjectItemCaseSensitive(json, "key");
+        //     if (key != NULL && cJSON_IsString(key))
+        //     {
+                
+        //         pc_comm_send_string_blocking("Received public key from server: ");
+        //         pc_comm_send_string_blocking(cJSON_GetStringValue(key));
+        //         pc_comm_send_string_blocking("\n");
+
+        //          //check if key exchange is completed
+        //         // if (!key_exchange_completed) {
+        //         //     handle_received_public_key(cJSON_GetStringValue(key));
+        //         // }
+        //     }
+        // }
     }
 
     cJSON_Delete(json); // frees memory
@@ -129,10 +131,14 @@ void json_controller_pkg() {
     }
 
     int length = strlen(temp);
+
     //encryption before transmiting
-    AESHandler_encrypt(&temp);
+    // AESHandler_encrypt(&temp);
 
     connection_controller_transmit(temp, length);
+
+    //Print confirmation of transmission
+    pc_comm_send_string_blocking("JSON sent to server.\n");
 
     free(temp);
 };
