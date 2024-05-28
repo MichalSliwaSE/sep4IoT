@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "AESHandler.h"
+#include "hash.h"
 
 bool key_exchange_completed = false;
 
