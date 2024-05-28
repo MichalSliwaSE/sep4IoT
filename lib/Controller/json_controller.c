@@ -110,15 +110,15 @@ void json_controller_pkg() {
     sensor_controller_dht11(&celc, &hum);
 
     // define each sensor, sadly manually :')
-    information[0] = (reading *)create_instances_in_json("water_conductivity", sensor_controller_water_ec());
-    information[1] = (reading *)create_instances_in_json("water_ph", sensor_controller_ph());
-    information[2] = (reading *)create_instances_in_json("water_temperature", sensor_controller_water_temp());
-    information[3] = (reading *)create_instances_in_json("water_flow_rate", water_flow_controller_get_flow());
-    information[4] = (reading *)create_instances_in_json("water_level", sensor_controller_water_temp());
-    information[5] = (reading *)create_instances_in_json("temperature", celc);
-    information[6] = (reading *)create_instances_in_json("humidity", hum);
-    information[7] = (reading *)create_instances_in_json("light", sensor_controller_light());
-    information[8] = (reading *)create_instances_in_json("co2", sensor_controller_co2());
+    information[0] = (reading *)create_instances_in_json("waterConductivity", sensor_controller_water_ec());
+    information[1] = (reading *)create_instances_in_json("waterPh", sensor_controller_ph());
+    information[2] = (reading *)create_instances_in_json("waterTemperature", sensor_controller_water_temp());
+    information[3] = (reading *)create_instances_in_json("waterFlow", water_flow_controller_get_flow());
+    information[4] = (reading *)create_instances_in_json("waterLevel", sensor_controller_water_temp());
+    information[5] = (reading *)create_instances_in_json("airTemperature", celc);
+    information[6] = (reading *)create_instances_in_json("airHumidity", hum);
+    information[7] = (reading *)create_instances_in_json("lightLevel", sensor_controller_light());
+    information[8] = (reading *)create_instances_in_json("airCo2", sensor_controller_co2());
 
     // this creates the json
     char *temp = create_json(information, arraySize);
