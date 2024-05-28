@@ -11,6 +11,10 @@
 
 void serverCallback(char *buffer)
 {
+     if (buffer == NULL) {
+        sensor_controller_send("Error: Received null buffer from server!\n");
+        return;
+    }
     sensor_controller_send("Server >> ");
     sensor_controller_send(buffer);
     sensor_controller_send("\n");

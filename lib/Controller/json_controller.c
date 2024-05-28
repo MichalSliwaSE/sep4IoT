@@ -22,7 +22,18 @@ void json_controller_edit_output(uint8_t percentage) {
     reading information[arraySize];
     information[0] = (reading *)create_instances_in_json("status", 1);
 
+      if (information == NULL) {
+        pc_comm_send_string_blocking("Error creating JSON instances for status!\n");
+        return;
+    }
+
     char *temp = create_json(information, arraySize);
+
+    if (temp == NULL) {
+        pc_comm_send_string_blocking("Error creating JSON!\n");
+        return;
+    }
+
     int length = strlen(temp);
 
     connection_controller_transmit(temp, length);
@@ -33,6 +44,12 @@ void json_controller_edit_output(uint8_t percentage) {
 void json_controller_parse(char* pkg)
 {
     cJSON *json = cJSON_Parse(pkg);
+
+    if (json == NULL) {
+        pc_comm_send_string_blocking("Error parsing JSON package!\n");
+        return;
+    }
+
     cJSON *requestType;
 
     requestType = cJSON_GetObjectItemCaseSensitive(json, "requestType");
@@ -105,6 +122,12 @@ void json_controller_pkg() {
 
     // this creates the json
     char *temp = create_json(information, arraySize);
+
+    if (temp == NULL) {
+        pc_comm_send_string_blocking("Error creating JSON!\n");
+        return;
+    }
+
     int length = strlen(temp);
     //encryption before transmiting
     AESHandler_encrypt(&temp);
