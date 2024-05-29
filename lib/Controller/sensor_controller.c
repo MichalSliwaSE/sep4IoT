@@ -1,7 +1,6 @@
 #include "sensor_controller.h"
 #include "connection_controller.h"
 #include "dht11.h"
-#include "display.h"
 #include "pc_comm.h"
 #include "wifi.h"
 #include "connection_controller.h"
