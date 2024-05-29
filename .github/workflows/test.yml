@@ -35,6 +35,9 @@ jobs:
       - name: run water ph test
         run: pio test -e native_test -f "test_water_ph"
 
+      - name: run temperature and humidity tests
+        run: pio test -e native_test -f "test_temperature_humidity"
+
       - name: run controller tests
         run: pio test -e native_test -f "test_controller"
 

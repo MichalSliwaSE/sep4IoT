@@ -5,100 +5,85 @@
 #include <stdio.h>
 #include "../lib/mocks/mock_avr_io.h"
 
-#include "dht11.h"
+#include "water_flow_controller.h"
+#include "sensor_controller.h"
 
 DEFINE_FFF_GLOBALS
 
+// WATER FLOW CONTROLLER
+FAKE_VOID_FUNC(water_flow_controller_init);
+FAKE_VOID_FUNC(water_flow_controller_set_flow, uint8_t);
+FAKE_VALUE_FUNC(uint8_t, water_flow_controller_get_flow);
+
 void setUp(void)
 {
+    // WATER FLOW CONTROLLER
+    RESET_FAKE(water_flow_controller_init);
+    RESET_FAKE(water_flow_controller_set_flow);
+    RESET_FAKE(water_flow_controller_get_flow);
+
+    FFF_RESET_HISTORY();
 }
 
 void tearDown(void)
 {
 }
 
-// TEMPERATURE AND HUMIDITY
-FAKE_VOID_FUNC(dht11_init);
-FAKE_VALUE_FUNC(DHT11_ERROR_MESSAGE_t, dht11_get, uint8_t *, uint8_t *, uint8_t *, uint8_t *);
+// WATER FLOW CONTROLLER
+void test_water_flow_status(void){
+    water_flow_controller_init();
+    TEST_ASSERT_EQUAL(1, water_flow_controller_init_fake.call_count);
 
-void test_dht11_status(void)
-{
-    dht11_init();
-    TEST_ASSERT_EQUAL(1, dht11_init_fake.call_count);
+    uint8_t expected_flow = 90;
+    water_flow_controller_get_flow_fake.return_val = expected_flow;
 
-    dht11_get_fake.return_val = DHT11_OK;
+    water_flow_controller_set_flow(expected_flow);
 
-    uint8_t dummy;
-    DHT11_ERROR_MESSAGE_t result = dht11_get(&dummy, &dummy, &dummy, &dummy);
-
-    TEST_ASSERT_EQUAL(DHT11_OK, result);
-    TEST_ASSERT_EQUAL(1, dht11_get_fake.call_count);
+    uint8_t result = water_flow_controller_get_flow();
+    TEST_ASSERT_EQUAL(expected_flow, result);
 }
 
-DHT11_ERROR_MESSAGE_t dht11_get_custom_fake(uint8_t *hum, uint8_t *arg2, uint8_t *temp, uint8_t *arg4)
-{
-    if(hum || temp){
-        *hum = 80; // Simulate a humidity value of 80
-    *temp = 22; // Simulate a temperature value of 22
-    }
-    
-    return DHT11_OK;
+void test_water_flow_set_closing_less_then_0(void){
+    water_flow_controller_init();
+    TEST_ASSERT_EQUAL(1, water_flow_controller_init_fake.call_count);
+
+    uint8_t invalid_flow = -20;
+    uint8_t expected_flow = 0;
+
+    water_flow_controller_set_flow(invalid_flow);
+
+    water_flow_controller_get_flow_fake.return_val = expected_flow;
+
+    uint8_t result = water_flow_controller_get_flow();
+
+    TEST_ASSERT_EQUAL(0, result);
 }
 
-void test_temperature_is_22celc(void)
-{
-    dht11_init();
-    TEST_ASSERT_EQUAL(2, dht11_init_fake.call_count);
+void test_water_flow_set_opening_more_then_100(void){
+    water_flow_controller_init();
+    TEST_ASSERT_EQUAL(1, water_flow_controller_init_fake.call_count);
 
-    uint8_t expected_temp = 22;
+    uint8_t invalid_flow = 120;
+    uint8_t expected_flow = 100;
 
-    dht11_get_fake.custom_fake = dht11_get_custom_fake;
+    water_flow_controller_set_flow(invalid_flow);
 
-    uint8_t celc = 0, dummy = 80;
-    DHT11_ERROR_MESSAGE_t result = dht11_get(&dummy, NULL, &celc, NULL);
+    water_flow_controller_get_flow_fake.return_val = expected_flow;
 
-    TEST_ASSERT_EQUAL(DHT11_OK, result);
-    TEST_ASSERT_EQUAL(expected_temp, celc);
-    TEST_ASSERT_EQUAL(2, dht11_get_fake.call_count);
-
-    char message[1024];
-    sprintf(message, "INFO! dht11 measurement! Temperature %d C!       :1:_:PASS\n", celc);
-    TEST_MESSAGE(message); // TEST_MESSAGE("m e s s a g e :1:_:PASS\n"); // no : in the message
+    uint8_t result = water_flow_controller_get_flow();
+    TEST_ASSERT_EQUAL(100, result);
 }
-
-void test_humidity_is_80celc(void)
-{
-    dht11_init();
-    TEST_ASSERT_EQUAL(3, dht11_init_fake.call_count);
-
-    uint8_t expected_hum = 80;
-
-    dht11_get_fake.custom_fake = dht11_get_custom_fake;
-
-    uint8_t humidity = 0, dummy = 22;
-    DHT11_ERROR_MESSAGE_t result = dht11_get(&humidity, NULL, &dummy, NULL);
-
-    TEST_ASSERT_EQUAL(DHT11_OK, result);
-    TEST_ASSERT_EQUAL(expected_hum, humidity);
-    TEST_ASSERT_EQUAL(3, dht11_get_fake.call_count);
-
-    char message[1024];
-    sprintf(message, "INFO! dht11 measurement! Humidity %d%%!       :1:_:PASS\n", humidity);
-    TEST_MESSAGE(message); // TEST_MESSAGE("m e s s a g e :1:_:PASS\n"); // no : in the message
-}
-
-//...
 
 int main(void)
 {
     UNITY_BEGIN();
 
-    // temperature & humidity tests
-    RUN_TEST(test_dht11_status);
-    RUN_TEST(test_temperature_is_22celc);
-    RUN_TEST(test_humidity_is_80celc);
+    // WATER FLOW CONTROLLER
+    RUN_TEST(test_water_flow_status);
+    RUN_TEST(test_water_flow_set_closing_less_then_0);
+    RUN_TEST(test_water_flow_set_opening_more_then_100);
 
-    //...
+    // SENSOR_CONTROLLER
 
     return UNITY_END();
 }
