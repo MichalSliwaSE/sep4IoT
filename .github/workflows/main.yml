@@ -28,11 +28,8 @@ jobs:
       - name: Build Project
         run: pio run -e target_run
 
-      - name: List Build Directory
-        run: ls -R ./.pio/build
-
       - uses: actions/upload-artifact@v4
         with:
           name: build-files  
-          path: .\.pio\build\target_run
+          path: ./.pio/build/target_run
 
